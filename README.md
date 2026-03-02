@@ -1,6 +1,6 @@
 # 🗓️ Nepali Date — Bikram Sambat for Java 21
 
-[![CI](https://github.com/prabesh-suwal/nepali-date/actions/workflows/ci-publish.yml/badge.svg)](https://github.com/prabesh-suwal/nepali-date/actions)
+[![CI](https://github.com/prabesh-suwal/nepali-date/actions/workflows/publish.yml/badge.svg)](https://github.com/prabesh-suwal/nepali-date/actions)
 [![GitHub Packages](https://img.shields.io/badge/GitHub%20Packages-v1.0.0-blue)](https://github.com/prabesh-suwal/nepali-date/packages)
 [![Java 21](https://img.shields.io/badge/Java-21-orange)](https://openjdk.org/projects/jdk/21/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
