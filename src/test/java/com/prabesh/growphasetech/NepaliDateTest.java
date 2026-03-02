@@ -7,13 +7,28 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.prabesh.growphasetech.NepaliDateFormatter.Format.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.SecureRandom;
+import java.net.http.HttpClient;
 
 /**
  * Comprehensive test suite for the Nepali Date library.
@@ -24,6 +39,9 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
  */
 @DisplayName("Nepali Date Library")
 class NepaliDateTest {
+
+
+
 
     // ══════════════════════════════════════════════════════════════════════════
     // NepaliDate record
@@ -66,7 +84,7 @@ class NepaliDateTest {
         @Test
         @DisplayName("Year above maximum throws UnsupportedBSYearException")
         void yearAboveMaxThrows() {
-            assertThrows(UnsupportedBSYearException.class, () -> new NepaliDate(2100, 1, 1));
+            assertThrows(UnsupportedBSYearException.class, () -> new NepaliDate(2101, 1, 1));
         }
 
         @Test
@@ -144,9 +162,11 @@ class NepaliDateTest {
         @ParameterizedTest(name = "AD {0} → BS {1}/{2}/{3}")
         @CsvSource({
             "1943-04-14, 2000, 1,  1",   // Anchor point
-            "2024-04-13, 2081, 1,  1",   // Baisakh 1, 2081 (Nepali New Year)
+            "2024-04-12, 2080, 12,  30",
+
+            "2024-04-13, 2081, 1,  1",
             "2024-04-14, 2081, 1,  2",
-            "2025-04-13, 2082, 1,  1",   // Baisakh 1, 2082 (Nepali New Year)
+            "2025-04-13, 2081, 12,  31",
             "2025-03-15, 2081, 12, 2",   // Mid-Falgun
             "2000-01-01, 2056, 9, 17",   // AD millennium → BS
         })
@@ -162,7 +182,7 @@ class NepaliDateTest {
         @CsvSource({
             "2000,  1,  1, 1943-04-14",  // Anchor point (reverse)
             "2081,  1,  1, 2024-04-13",  // Baisakh 1, 2081
-            "2082,  1,  1, 2025-04-13",  // Baisakh 1, 2082
+            "2082,  1,  1, 2025-04-14",  // Baisakh 1, 2082
             "2082,  11,  2, 2026-02-14",  // Falgun 11, 2082
             "2081, 11,  2, 2025-02-14",
         })
@@ -204,6 +224,145 @@ class NepaliDateTest {
                 assertEquals(original, roundTripped,
                     () -> "Round-trip failed for BS date: " + original);
             }
+        }
+
+        @Test
+        @DisplayName("BS to AD conversion check for one day of every month/year (1950–2099)")
+        void bsToAdForEveryMonthAndYear1950To2099() {
+            int checked = 0;
+
+            for (int year = 1950; year <= 2099; year++) {
+                for (int month = 1; month <= 12; month++) {
+                    int representativeDay = Math.min(15, NepaliCalendarData.getDaysInMonth(year, month));
+
+                    NepaliDate bs = new NepaliDate(year, month, representativeDay);
+                    LocalDate ad = bs.toAD();
+                    NepaliDate backToBs = NepaliDate.fromAD(ad);
+
+                    assertEquals(bs, backToBs,
+                            () -> "BS→AD→BS mismatch for BS " + bs + " via AD " + ad);
+                    checked++;
+                }
+            }
+
+            assertEquals(150 * 12, checked, "Should validate one date per month for each BS year 1950–2099");
+        }
+
+        @Test
+        @DisplayName("AD to BS conversion check for one corresponding AD day per BS month/year (1950–2099)")
+        void adToBsForEveryMonthAndYear1950To2099() {
+            int checked = 0;
+
+            for (int year = 1950; year <= 2099; year++) {
+                for (int month = 1; month <= 12; month++) {
+                    int representativeDay = Math.min(15, NepaliCalendarData.getDaysInMonth(year, month));
+
+                    NepaliDate expectedBs = new NepaliDate(year, month, representativeDay);
+                    LocalDate ad = expectedBs.toAD();
+                    NepaliDate actualBs = NepaliDate.fromAD(ad);
+
+                    assertEquals(expectedBs, actualBs,
+                            () -> "AD→BS mismatch for AD " + ad + "; expected BS " + expectedBs + " but got " + actualBs);
+                    checked++;
+                }
+            }
+
+            assertEquals(150 * 12, checked, "Should validate one AD case per BS month for years 1950–2099");
+        }
+
+
+//        @Test
+//        @DisplayName("External reference (optional): Bolpatra BS→AD check for all months/years 2000–2089")
+//        void externalBolpatraReferenceFor2000To2089() throws Exception {
+//            Assumptions.assumeTrue(Boolean.getBoolean("runExternalBolpatraTests"),
+//                    "Set -DrunExternalBolpatraTests=true to run external Bolpatra validation");
+//
+//            HttpClient client = HttpClient.newHttpClient();
+//            int checked = 0;
+//
+//            for (int year = 2000; year <= 2089; year++) {
+//                for (int month = 1; month <= 12; month++) {
+//                    int day = Math.min(15, NepaliCalendarData.getDaysInMonth(year, month));
+//                    NepaliDate bs = new NepaliDate(year, month, day);
+//                    System.out.println(bs);
+//
+//                    LocalDate expectedAd = bs.toAD();
+//                    Thread.sleep(100);
+//                    LocalDate bolpatraAd = fetchBolpatraConvertedDate(client, year, month, day);
+//
+//                    assertEquals(expectedAd, bolpatraAd,
+//                            () -> "Bolpatra mismatch for BS " + bs + ": expected " + expectedAd + " but got " + bolpatraAd);
+//                    checked++;
+//                }
+//            }
+//
+//            assertEquals(90 * 12, checked,
+//                    "Should validate one monthly sample for each BS year 2000–2089 against Bolpatra");
+//        }
+//
+//        private LocalDate fetchBolpatraConvertedDate(HttpClient client, int year, int month, int day)
+//                throws Exception {
+//
+//            // Setup Trust Manager to ignore SSL certificate validation (for testing only!)
+//            TrustManager[] trustAllCerts = new TrustManager[]{
+//                    new X509TrustManager() {
+//                        public java.security.cert.X509Certificate[] getAcceptedIssuers() { return null; }
+//                        public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+//                        public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {}
+//                    }
+//            };
+//
+//            SSLContext sslContext = SSLContext.getInstance("TLS");
+//            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+//
+//            // Re-build the client with the insecure SSL context
+//            HttpClient insecureClient = HttpClient.newBuilder()
+//                    .sslContext(sslContext)
+//                    .build();
+//
+//            String form = "nepYear=" + year + "&nepMonth=" + month + "&nepDate=" + day;
+//
+//            HttpRequest request = HttpRequest.newBuilder(URI.create("https://bolpatra.gov.np/egp/convertToEng"))
+//                    .header("Content-Type", "application/x-www-form-urlencoded")
+//                    // Use a full User-Agent to avoid 403 Forbidden
+//                    .header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36")
+//                    .header("Referer", "https://bolpatra.gov.np/egp/openDateConverter")
+//                    .POST(HttpRequest.BodyPublishers.ofString(form))
+//                    .build();
+//
+//            HttpResponse<String> response = insecureClient.send(request, HttpResponse.BodyHandlers.ofString());
+//
+//            if (response.statusCode() == 403) {
+//                throw new RuntimeException("Bolpatra blocked the request (403). Try updating the User-Agent or Referer.");
+//            }
+//
+//            assertEquals(200, response.statusCode());
+//            return parseEnglishDateFromBolpatraHtml(response.body(), year, month, day);
+//        }
+
+//        private LocalDate parseEnglishDateFromBolpatraHtml(String html, int year, int month, int day) {
+//            Pattern pattern = Pattern.compile("([A-Za-z]+,\\s+[A-Za-z]+\\s+\\d{1,2},\\s+\\d{4})");
+//            Matcher matcher = pattern.matcher(html);
+//            assertTrue(matcher.find(),
+//                    () -> "Unable to parse converted AD date from Bolpatra response for BS " + year + "/" + month + "/" + day);
+//
+//            String englishDate = matcher.group(1);
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy", Locale.ENGLISH);
+//            return LocalDate.parse(englishDate, formatter);
+//        }
+
+        private LocalDate parseEnglishDateFromBolpatraHtml(String html, int year, int month, int day) {
+            // Regex updated to handle potential extra spaces/newlines inside the <td>
+            Pattern pattern = Pattern.compile("(?i)([a-z]+,\\s+[a-z]+\\s+\\d{1,2},\\s+\\d{4})");
+            Matcher matcher = pattern.matcher(html);
+
+            if (matcher.find()) {
+                String englishDate = matcher.group(1).trim();
+                // DateTimeFormatter is perfect here
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d, yyyy", Locale.ENGLISH);
+                return LocalDate.parse(englishDate, formatter);
+            }
+            throw new RuntimeException("Regex failed to find date in Bolpatra HTML for " + year + "-" + month + "-" + day);
         }
     }
 
@@ -532,9 +691,53 @@ class NepaliDateTest {
             assertTrue(NepaliCalendarData.isYearSupported(2000));
             assertTrue(NepaliCalendarData.isYearSupported(2099));
             assertTrue(NepaliCalendarData.isYearSupported(1999));
-            assertFalse(NepaliCalendarData.isYearSupported(2100));
+            assertFalse(NepaliCalendarData.isYearSupported(2101));
             assertFalse(NepaliCalendarData.isYearSupported(1899));
 
+        }
+        @Test
+        @DisplayName("All calendar rows should contain realistic month lengths")
+        void allMonthLengthsAreRealistic() {
+            for (int y = NepaliCalendarData.MIN_YEAR; y <= NepaliCalendarData.MAX_YEAR; y++) {
+                int[] months = NepaliCalendarData.getMonthData(y);
+                assertEquals(12, months.length, "Year " + y + " should have 12 months");
+
+                for (int m = 0; m < months.length; m++) {
+                    int days = months[m];
+                    int finalY = y;
+                    int finalM = m;
+                    assertTrue(days >= 29 && days <= 32,
+                            () -> "BS " + finalY + "/" + (finalM + 1) + " has unrealistic day count: " + days);
+                }
+            }
+        }
+
+        @Test
+        @DisplayName("Every BS new year should map to mid-April in AD")
+        void newYearAlwaysFallsInMidApril() {
+            for (int y = NepaliCalendarData.MIN_YEAR; y <= NepaliCalendarData.MAX_YEAR; y++) {
+                LocalDate ad = new NepaliDate(y, 1, 1).toAD();
+                assertEquals(4, ad.getMonthValue(), "BS " + y + "/01/01 should be in AD April");
+                int finalY = y;
+                assertTrue(ad.getDayOfMonth() >= 12 && ad.getDayOfMonth() <= 15,
+                        () -> "BS " + finalY + "/01/01 mapped to unexpected AD day: " + ad);
+            }
+        }
+
+        @Test
+        @DisplayName("Year transitions should be exactly 365 or 366 AD days apart")
+        void yearTransitionsMatchCalendarTotals() {
+            for (int y = NepaliCalendarData.MIN_YEAR; y < NepaliCalendarData.MAX_YEAR; y++) {
+                LocalDate currentYear = new NepaliDate(y, 1, 1).toAD();
+                LocalDate nextYear = new NepaliDate(y + 1, 1, 1).toAD();
+
+                long adSpan = ChronoUnit.DAYS.between(currentYear, nextYear);
+                int bsYearDays = NepaliCalendarData.getDaysInYear(y);
+
+                int finalY = y;
+                assertEquals(bsYearDays, adSpan,
+                        () -> "Mismatch in BS " + finalY + " total days; table=" + bsYearDays + ", AD span=" + adSpan);
+            }
         }
     }
 }

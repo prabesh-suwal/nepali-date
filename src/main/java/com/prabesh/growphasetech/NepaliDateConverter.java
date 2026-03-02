@@ -132,23 +132,34 @@ public final class NepaliDateConverter {
      * @throws NullPointerException       if {@code bsDate} is {@code null}
      * @throws UnsupportedBSYearException if {@code bsDate.year()} is outside 1900–2099
      */
+//    public static LocalDate toAD(NepaliDate bsDate) {
+//        if (bsDate == null) throw new NullPointerException("bsDate must not be null");
+//
+//        long totalDays = 0;
+//
+//        // Sum all complete years from the start year up to (but not including) the target year
+//        for (int y = BS_START_YEAR; y < bsDate.year(); y++) {
+//            totalDays += NepaliCalendarData.getDaysInYear(y);
+//        }
+//
+//        // Sum complete months in the target year before the target month
+//        int[] monthData = NepaliCalendarData.getMonthData(bsDate.year());
+//        for (int m = 0; m < bsDate.month() - 1; m++) {
+//            totalDays += monthData[m];
+//        }
+//
+//        // Add the day offset: day 1 contributes 0 extra days
+//        totalDays += bsDate.day() - 1;
+//
+//        return LocalDate.ofEpochDay(AD_EPOCH_DAY + totalDays);
+//    }
     public static LocalDate toAD(NepaliDate bsDate) {
-        if (bsDate == null) throw new NullPointerException("bsDate must not be null");
+        long totalDays = NepaliCalendarData.getDaysBeforeYear(bsDate.year());
 
-        long totalDays = 0;
-
-        // Sum all complete years from the start year up to (but not including) the target year
-        for (int y = BS_START_YEAR; y < bsDate.year(); y++) {
-            totalDays += NepaliCalendarData.getDaysInYear(y);
-        }
-
-        // Sum complete months in the target year before the target month
         int[] monthData = NepaliCalendarData.getMonthData(bsDate.year());
         for (int m = 0; m < bsDate.month() - 1; m++) {
             totalDays += monthData[m];
         }
-
-        // Add the day offset: day 1 contributes 0 extra days
         totalDays += bsDate.day() - 1;
 
         return LocalDate.ofEpochDay(AD_EPOCH_DAY + totalDays);

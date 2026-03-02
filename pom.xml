@@ -22,7 +22,7 @@
         and official Nepali government letter date formatting.
         Coverage: BS 2000–2099.
     </description>
-    <url>https://github.com/nepalidate/nepali-date</url>
+    <url>https://github.com/prabesh-suwal/nepali-date.git</url>
 
     <licenses>
         <license>
@@ -36,13 +36,15 @@
             <name>Your Name</name>
             <email>prabeshsuwal1234@gmail.com</email>
             <organization>Growhphase Technologies</organization>
+            <organizationUrl>https://growphasetech.com/</organizationUrl>
+            <url>https://prabeshsuwal.com.np/</url>
         </developer>
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/nepalidate/nepali-date.git</connection>
-        <developerConnection>scm:git:ssh://github.com/nepalidate/nepali-date.git</developerConnection>
-        <url>https://github.com/nepalidate/nepali-date</url>
+        <connection>scm:git:git://github.com/prabesh-suwal/nepali-date.git</connection>
+        <developerConnection>scm:git:ssh://github.com/prabesh-suwal/nepali-date.git</developerConnection>
+        <url>https://github.com/prabesh-suwal/nepali-date.git</url>
     </scm>
 
     <properties>
@@ -54,6 +56,11 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.18.1</version>
+        </dependency>
         <!-- ── Test-only dependencies (zero runtime deps by design) ── -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -142,7 +149,7 @@
             <id>github</id>
             <name>GitHub Packages</name>
             <!-- Replace OWNER and REPO with your GitHub username and repo name -->
-            <url>https://maven.pkg.github.com/OWNER/REPO</url>
+            <url>https://maven.pkg.github.com/prabesh-suwal/nepali-date</url>
         </repository>
     </distributionManagement>
 
