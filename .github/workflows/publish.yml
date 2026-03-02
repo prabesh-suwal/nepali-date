@@ -1,7 +1,5 @@
 name: CI & Publish to GitHub Packages
 
-name: CI & Publish to GitHub Packages
-
 # ── When this workflow runs ───────────────────────────────────────────────────
 on:
   # Run CI on every push and pull request to main
