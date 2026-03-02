@@ -54,6 +54,6 @@
  *
  * @author  nepali-date contributors
  * @version 1.0.0
- * @see     <a href="https://github.com/nepalidate/nepali-date">GitHub Repository</a>
+ * @see     <a href="https://github.com/prabesh-suwal/nepali-date">GitHub Repository</a>
  */
 package com.prabesh.growphasetech;

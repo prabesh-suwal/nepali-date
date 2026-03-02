@@ -1,7 +1,7 @@
 # 🗓️ Nepali Date — Bikram Sambat for Java 21
 
-[![CI](https://github.com/OWNER/nepali-date/actions/workflows/ci-publish.yml/badge.svg)](https://github.com/OWNER/nepali-date/actions)
-[![GitHub Packages](https://img.shields.io/badge/GitHub%20Packages-v1.0.0-blue)](https://github.com/OWNER/nepali-date/packages)
+[![CI](https://github.com/prabesh-suwal/nepali-date/actions/workflows/ci-publish.yml/badge.svg)](https://github.com/prabesh-suwal/nepali-date/actions)
+[![GitHub Packages](https://img.shields.io/badge/GitHub%20Packages-v1.0.0-blue)](https://github.com/prabesh-suwal/nepali-date/packages)
 [![Java 21](https://img.shields.io/badge/Java-21-orange)](https://openjdk.org/projects/jdk/21/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
@@ -35,14 +35,14 @@ Add the repository and dependency to your `pom.xml`:
 <repositories>
     <repository>
         <id>github</id>
-        <url>https://maven.pkg.github.com/OWNER/nepali-date</url>
+        <url>https://maven.pkg.github.com/prabesh-suwal/nepali-date</url>
     </repository>
 </repositories>
 
 <!-- 2. Add the dependency -->
 <dependencies>
     <dependency>
-        <groupId>io.github.nepalidate</groupId>
+        <groupId>com.prabesh.growphasetech</groupId>
         <artifactId>nepali-date</artifactId>
         <version>1.0.0</version>
     </dependency>
@@ -66,7 +66,7 @@ Add the repository and dependency to your `pom.xml`:
 ```kotlin
 repositories {
     maven {
-        url = uri("https://maven.pkg.github.com/OWNER/nepali-date")
+        url = uri("https://maven.pkg.github.com/prabesh-suwal/nepali-date")
         credentials {
             username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
             password = project.findProperty("gpr.key")  as String? ?: System.getenv("TOKEN")
@@ -75,7 +75,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.github.nepalidate:nepali-date:1.0.0")
+    implementation("com.prabesh.growphasetech:nepali-date:1.0.0")
 }
 ```
 

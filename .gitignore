@@ -1,17 +1,46 @@
+### Maven ###
 target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-.kotlin
+
+### Compiled class file ###
+*.class
+
+### Package Files ###
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+### Gradle ###
+.gradle
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
 ### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-*.iws
+.idea/
 *.iml
+*.iws
 *.ipr
+out/
+*.sublime-workspace
 
 ### Eclipse ###
 .apt_generated
@@ -21,6 +50,8 @@ target/
 .settings
 .springBeans
 .sts4-cache
+bin/
+.metadata/
 
 ### NetBeans ###
 /nbproject/private/
@@ -28,12 +59,67 @@ target/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+/build/
+/.nb-gradle/
 
 ### VS Code ###
 .vscode/
+*.code-workspace
 
-### Mac OS ###
+### Vim ###
+*.swp
+*.swo
+*~
+.vim/
+
+### Sublime Text ###
+.sublime-project
+
+### Emacs ###
+*~
+\#*\#
+.\#*
+
+### macOS ###
 .DS_Store
+.AppleDouble
+.LSOverride
+*.swp
+._*
+
+### Windows ###
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+### Linux ###
+.directory
+
+### Java ###
+.kotlin
+*.log
+*.log.*
+hs_err_pid*.log
+replay_pid*.log
+*.hprof
+
+### Local Environment ###
+.env
+.env.local
+local.properties
+application-local.properties
+*.local
+
+### Miscellaneous ###
+.cache/
+.classpath
+.project
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode-test/
+node_modules/
