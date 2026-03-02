@@ -49,8 +49,10 @@ Add the repository and dependency to your `pom.xml`:
 </dependencies>
 ```
 
-> **Note:** GitHub Packages requires authentication even for public packages.
-> Add this to your `~/.m2/settings.xml`:
+> **Note:** GitHub Packages requires authentication even for public packages
+> (for rate limiting and abuse prevention — see [WHY-GITHUB-AUTH-NEEDED.md](WHY-GITHUB-AUTH-NEEDED.md) for details).
+>
+> To use this library, add your GitHub credentials to `~/.m2/settings.xml`:
 > ```xml
 > <servers>
 >   <server>
@@ -60,6 +62,8 @@ Add the repository and dependency to your `pom.xml`:
 >   </server>
 > </servers>
 > ```
+> 
+> **To generate a token:** https://github.com/settings/tokens (select `read:packages` scope)
 
 ### Gradle (Kotlin DSL)
 
