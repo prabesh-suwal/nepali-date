@@ -5,7 +5,7 @@ import com.prabesh.growphasetech.exceptions.InvalidNepaliDateException;
 /**
  * Represents a Nepal government fiscal year (आर्थिक वर्ष).
  *
- * <h3>Nepal fiscal year structure</h3>
+ * <h2>Nepal fiscal year structure</h2>
  * <p>Nepal's fiscal year runs from <strong>Shrawan 1</strong> (BS month 4,
  * approximately mid-July AD) to the last day of <strong>Ashadh</strong>
  * (BS month 3, approximately mid-July AD the following year).</p>

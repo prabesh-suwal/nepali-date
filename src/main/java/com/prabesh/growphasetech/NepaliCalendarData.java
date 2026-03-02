@@ -10,14 +10,14 @@ import java.util.Map;
  * Immutable lookup table containing the number of days in each month for every
  * Bikram Sambat (BS) year from <strong>1900 to 2099</strong> — a span of 200 years.
  *
- * <h3>Why a lookup table?</h3>
+ * <h2>Why a lookup table?</h2>
  * <p>Unlike the Gregorian calendar, the Bikram Sambat calendar has <em>no fixed
  * mathematical formula</em> to determine the number of days in a given month.
  * Day counts are determined by astronomers based on lunar and solar cycles and
  * published officially by the Government of Nepal each year. This class encodes
  * those published values.</p>
  *
- * <h3>Data provenance and reliability</h3>
+ * <h2>Data provenance and reliability</h2>
  * <ul>
  *   <li><strong>BS 1975–2099</strong>: Cross-referenced against Hamro Patro,
  *       Nepal Rastra Bank official calendar, and Government of Nepal publications.
@@ -350,6 +350,13 @@ public final class NepaliCalendarData {
         return total;
     }
 
+    /**
+     * Returns the total number of days from BS 1900/01/01 to the day before the start of the given year.
+     *
+     * @param bsYear the Bikram Sambat year (must be within 1900–2099)
+     * @return cumulative days before the start of {@code bsYear}
+     * @throws UnsupportedBSYearException if {@code bsYear} is outside the supported range
+     */
     public static int getDaysBeforeYear(int bsYear) {
         return CUMULATIVE_YEAR_DAYS[bsYear - MIN_YEAR];
     }

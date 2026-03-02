@@ -17,11 +17,11 @@ import java.time.LocalDate;
  *   <li>Instances are safe to share across threads.</li>
  * </ul>
  *
- * <h3>Supported range</h3>
+ * <h2>Supported range</h2>
  * <p>BS 2000 (≈ AD 1943) through BS 2099 (≈ AD 2043). Outside this range,
  * an {@link UnsupportedBSYearException} is thrown.</p>
  *
- * <h3>Month numbering</h3>
+ * <h2>Month numbering</h2>
  * <pre>
  *   1 = Baisakh   7  = Kartik
  *   2 = Jestha    8  = Mangsir
@@ -31,7 +31,7 @@ import java.time.LocalDate;
  *   6 = Ashwin    12 = Chaitra
  * </pre>
  *
- * <h3>Usage examples</h3>
+ * <h2>Usage examples</h2>
  * <pre>{@code
  * // Today's date in Bikram Sambat
  * NepaliDate today = NepaliDate.today();

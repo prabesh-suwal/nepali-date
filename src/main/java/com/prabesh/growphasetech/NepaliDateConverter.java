@@ -8,27 +8,27 @@ import java.time.LocalDate;
 /**
  * Converts dates between the Gregorian (AD) calendar and the Bikram Sambat (BS) calendar.
  *
- * <h3>Supported range</h3>
+ * <h2>Supported range</h2>
  * <p>BS 1900 (approx. AD 1843) through BS 2099 (approx. AD 2043).</p>
  *
- * <h3>Algorithm overview</h3>
+ * <h2>Algorithm overview</h2>
  * <p>BS has no mathematical formula, so conversion works by counting days from a
  * known anchor point.</p>
  *
- * <h4>AD to BS</h4>
+ * <h3>AD to BS</h3>
  * <ol>
  *   <li>Compute days elapsed between anchor (BS 1900/01/01 = AD 1843/04/13) and target.</li>
  *   <li>Walk BS years forward subtracting each year's total until days fit within a year.</li>
  *   <li>Walk months of that year similarly to find month and day.</li>
  * </ol>
  *
- * <h4>BS to AD</h4>
+ * <h3>BS to AD</h3>
  * <ol>
  *   <li>Sum all days from BS 1900/01/01 to the day before the target.</li>
  *   <li>Add that offset to anchor AD date (1843/04/13).</li>
  * </ol>
  *
- * <h3>Anchor point</h3>
+ * <h2>Anchor point</h2>
  * <pre>
  *   BS 1900/01/01  =  AD 1843/04/13
  * </pre>

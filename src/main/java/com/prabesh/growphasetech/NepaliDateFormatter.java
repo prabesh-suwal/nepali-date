@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
  * various conventions used in Nepal — from official government letter headings
  * to compact storage formats.
  *
- * <h3>Available formats</h3>
+ * <h2>Available formats</h2>
  * <pre>
  *  Format          Example output (BS 2082/04/15)
  *  ──────────────  ────────────────────────────────────────

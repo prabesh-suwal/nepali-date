@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * An immutable, closed date range in the Bikram Sambat (BS) calendar — from
  * {@link #start()} to {@link #end()}, <strong>inclusive</strong> on both ends.
  *
- * <h3>Use cases</h3>
+ * <h2>Use cases</h2>
  * <ul>
  *   <li>Represent a fiscal year period (see {@link FiscalYear#toDateRange()}).</li>
  *   <li>Represent a quarterly or monthly reporting window.</li>
