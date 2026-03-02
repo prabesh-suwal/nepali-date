@@ -1,0 +1,77 @@
+name: CI & Publish to GitHub Packages
+
+# ── When this workflow runs ───────────────────────────────────────────────────
+on:
+  # Run CI on every push and pull request to main
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  # Publish to GitHub Packages only when a release tag is pushed
+  # Create a release tag: git tag v1.0.0 && git push origin v1.0.0
+  release:
+    types: [ created ]
+
+jobs:
+
+  # ── Job 1: Build and test ─────────────────────────────────────────────────
+  build-and-test:
+    name: Build & Test (Java 21)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21 (Temurin distribution)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          # Cache Maven dependencies to speed up subsequent runs
+          cache: maven
+
+      - name: Build and run all tests
+        run: mvn --batch-mode clean verify
+
+      - name: Upload test reports (always, so failures are visible)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: target/surefire-reports/
+
+  # ── Job 2: Publish (only on release tag) ─────────────────────────────────
+  publish:
+    name: Publish to GitHub Packages
+    runs-on: ubuntu-latest
+    # Only run this job after build-and-test succeeds AND it's a release event
+    needs: build-and-test
+    if: github.event_name == 'release' && github.event.action == 'created'
+
+    permissions:
+      # Required to upload packages to GitHub Packages
+      packages: write
+      contents: read
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21 with GitHub Packages server
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+          # This configures ~/.m2/settings.xml with the 'github' server ID
+          # matching the <distributionManagement> in pom.xml
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+
+      - name: Publish JAR, sources, and Javadoc to GitHub Packages
+        run: mvn --batch-mode deploy -DskipTests
+        env:
+          # GitHub automatically provides GITHUB_TOKEN — no secrets setup needed
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
