@@ -11,7 +11,8 @@
  *   <li>Nepali fiscal year (आर्थिक वर्ष) support via {@link com.prabesh.growphasetech.FiscalYear}</li>
  *   <li>Date-range queries via {@link com.prabesh.growphasetech.NepaliDateRange}</li>
  *   <li>Government letter formatting (Nepali &amp; English) via
- *       {@link com.prabesh.growphasetech.NepaliDateFormatter}</li>
+ *       {@link com.prabesh.growphasetech.NepaliDateFormatter} and
+ *       {@link com.prabesh.growphasetech.FiscalYearFormatter}</li>
  * </ul>
  *
  * <h3>Quick Start</h3>
@@ -29,6 +30,10 @@
  * // Current fiscal year
  * FiscalYear fy = FiscalYear.of(today);
  * System.out.println(fy); // → "2081/82"
+ *
+ * // Format fiscal year in Nepali
+ * String nepaliFormat = FiscalYearFormatter.formatStandardNP(fy);
+ * // → "२०८१/८२"
  *
  * // Search memos in fiscal year range
  * NepaliDateRange range = fy.toDateRange();
